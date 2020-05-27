@@ -2,7 +2,7 @@
 #' 
 #' \code{recovalarm} interprets output from \code{mwdistdiffz} to detect disturbances and determine recovery time
 #' 
-#' @param mwdistdiffqq.obj output from \code{mwdistdiffz}
+#' @param mwdistdiffz.obj output from \code{mwdistdiffz}
 #' @param dthresh threshold quantile corresponding to a disturbance alarm
 #' @param rthresh threshold quantile corresponding to recovery from disturbance
 #' 
@@ -10,6 +10,8 @@
 #' \item{dist.date} time a disturbance was detected 
 #' \item{recov.date} time a recovery was detected
 #' \item{tdiff} difference between \code{recov} and \code{disturb}; the recovery time.
+#' \item{peakz} peak z-score recorded during disturbance
+#' \item{peak.date} date peak z-score was recorded 
 #' 
 #' @details Values of \code{disturb} and \code{recov} are the times corresponding to the middle of the moving window.
 #' 
@@ -19,6 +21,9 @@
 #' #need to add some
 #' 
 #' @export
+#' 
+
+#TODO: Add computations for peakz and peak.date
 
 recovalarm<-function(mwdistdiffz.obj, dthresh=c(2), rthresh=c(0.5)){
   
@@ -39,7 +44,11 @@ recovalarm<-function(mwdistdiffz.obj, dthresh=c(2), rthresh=c(0.5)){
   
   #are there even disturbances?
   if(max(zz)<dthresh){
-    out<-data.frame(disturb=NA,recov=NA)
+    out<-data.frame(dist.date=NA
+                    ,recov.date=NA
+                    ,tdiff=NA
+                    ,peakz=NA
+                    ,peak.date=NA)
     print("no disturbances detected with provided values to dthresh")
   }
   else{
@@ -71,6 +80,9 @@ recovalarm<-function(mwdistdiffz.obj, dthresh=c(2), rthresh=c(0.5)){
   }
   out<-out[!duplicated(out$recov.date),]
   out$tdiff<-out$recov.date-out$dist.date
+  
+  peakz<-rep(NA, nrow(out))
+  peak.date<-rep(NA, nrow(out))
   
   return(out)
 }

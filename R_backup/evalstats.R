@@ -12,8 +12,7 @@
 #' \item{delta.tdiff} the absolute difference from the true recover time
 #' 
 #' @export
-#' 
-#' TODO: Fix this function to give a true positive if alarm is on when the disturbance hits
+#' ß
 
 evalStats<-function(true,estimated,tol){
   

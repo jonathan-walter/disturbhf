@@ -2,7 +2,7 @@
 library(roxygen2)
 library(devtools)
 
-#setwd("~/GitHub/disturbhf/")
+setwd("~/GitHub/disturbhf/")
 
 #create("disturbhf")
 build("disturbhf")   # need a folder named 'wtCNN, in which a file named DESCRIPTION and a sub-folder named 'R'. This will creat a zip file
