@@ -10,5 +10,6 @@ document("disturbhf") # this will create a file 'NAMESPACE' and a folder 'man'
 check("disturbhf")
 
 
-install("disturbhf")
-library("disturbhf")
+#install("disturbhf")
+#library("disturbhf")
+install_github("jonathan-walter/disturbhf")

@@ -15,11 +15,11 @@ recovalarm(mwdistdiffz.obj, dthresh = c(2), rthresh = c(0.5))
 }
 \value{
 \code{recovalarm} returns a data frame containing the columns:
-\item{dist.date} time a disturbance was detected
-\item{recov.date} time a recovery was detected
-\item{tdiff} difference between \code{recov} and \code{disturb}; the recovery time.
-\item{peakz} peak z-score recorded during disturbance
-\item{peak.date} date peak z-score was recorded
+\item{dist.date}{time a disturbance was detected}
+\item{recov.date}{time a recovery was detected}
+\item{tdiff}{difference between \code{recov} and \code{disturb}; the recovery time}
+\item{peakz}{peak z-score recorded during disturbance}
+\item{peak.date}{date peak z-score was recorded}
 }
 \description{
 \code{recovalarm} interprets output from \code{mwdistdiffz} to detect disturbances and determine recovery time

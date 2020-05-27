@@ -38,10 +38,10 @@ It must contain the columns \code{tt} and \code{yy}, as in \code{testy}.}
 }
 \value{
 \code{mwdistdiff} returns a data frame containing the columns:
-\item{wstart} the time corresponding to the beginning (left edge) of the moving window
-\item{wend} the time corresponding to the end (right edge) of the moving window
-\item{ddiff} differences from the reference distritbution
-\item{zz} Z-scores representing the strength of excursion from reference
+\item{wstart}{the time corresponding to the beginning (left edge) of the moving window}
+\item{wend}{the time corresponding to the end (right edge) of the moving window}
+\item{ddiff}{differences from the reference distritbution}
+\item{zz}{Z-scores representing the strength of excursion from reference}
 }
 \description{
 \code{mwdistdiffz} computes differences between the continuous distribution functions (cdf) for observations within

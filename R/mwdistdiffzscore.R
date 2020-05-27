@@ -18,10 +18,10 @@
 #' @param dmin the fraction of data that must be present (i.e., non-NA) in test (and, if applicable, adaptive reference) moving windows to procede with computations.
 #'
 #' @return \code{mwdistdiff} returns a data frame containing the columns:
-#' \item{wstart} the time corresponding to the beginning (left edge) of the moving window
-#' \item{wend} the time corresponding to the end (right edge) of the moving window
-#' \item{ddiff} differences from the reference distritbution
-#' \item{zz} Z-scores representing the strength of excursion from reference
+#' \item{wstart}{the time corresponding to the beginning (left edge) of the moving window}
+#' \item{wend}{the time corresponding to the end (right edge) of the moving window}
+#' \item{ddiff}{differences from the reference distritbution}
+#' \item{zz}{Z-scores representing the strength of excursion from reference}
 #'
 #' @details The value suppplied to \code{refwidth} determines whether a rolling reference window will be used,
 #' or if all of refy will be used as the reference period.

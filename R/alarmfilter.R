@@ -7,19 +7,18 @@
 #' @param dmin.recov a minimum duration for recovery events, in days
 #'
 #' @return \code{alarmfilter} returns a data frame containing the columns:
-#' \item{dist.date} time a disturbance was detected
-#' \item{recov.date} time a recovery was detected
-#' \item{tdiff} difference between \code{recov} and \code{disturb}; the recovery time.
+#' \item{dist.date}{time a disturbance was detected}
+#' \item{recov.date}{time a recovery was detected}
+#' \item{tdiff}{difference between \code{recov} and \code{disturb}; the recovery time.}
 #' This is the same format as output from \code{recovalarm}, but there will be fewer rows.
 #'
 #' @details \code{alarmfilter} merges disturbances separated by recoveries shorter than \code{dmin.recov}
-#' and then removes disturbances shorter than \code{dmin.dist}
+#' and then removes disturbances shorter than \code{dmin.dist}.
 #'
 #' @export
-
-# TODO Check that this code works if dist.date and recov.date are POSIXct objects. And that it needs to if this is the case.
-
 alarmfilter<-function(recovalarm.obj, dmin.dist, dmin.recov=dmin.dist){
+
+  # Check that this code works if dist.date and recov.date are POSIXct objects. And that it needs to if this is the case.
 
   out<-recovalarm.obj
   if(nrow(out)<=1)return(out)
