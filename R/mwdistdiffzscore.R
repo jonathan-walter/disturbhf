@@ -74,7 +74,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, sta
       if(mean(!is.na(refy$yy[wind0[ww]:(wind0[ww]+wwidth)])) < dmin){
         ddiff0[ww]<-NA
       }
-      else if(length(unique(diff(refy$tt[wind0[ww]:(wind0[ww]+wwidth)])))!=1){
+      else if(any(diff(diff(refy$tt[wind0[ww]:(wind0[ww]+wwidth)]))>1e-6)){
         ddiff0[ww]<-NA
       }
       else{
