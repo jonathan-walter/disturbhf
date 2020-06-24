@@ -3,8 +3,8 @@
 #' \code{recovalarm} interprets output from \code{mwdistdiffz} to detect disturbances and determine recovery time
 #'
 #' @param mwdistdiffz.obj output from \code{mwdistdiffz}
-#' @param dthresh threshold quantile corresponding to a disturbance alarm
-#' @param rthresh threshold quantile corresponding to recovery from disturbance
+#' @param dthresh threshold z-score corresponding to a disturbance alarm
+#' @param rthresh threshold z-score corresponding to recovery from disturbance
 #'
 #' @return \code{recovalarm} returns a data frame containing the columns:
 #' \item{dist.date}{time a disturbance was detected}

@@ -38,7 +38,7 @@
 #' @export
 #'
 
-#TODO: write this so that the function can accept data data? this would make it such that testy can span multiple years.
+#TODO: write this so that the function can accept date data? this would make it such that testy can span multiple years.
 
 mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, stat="mean", dmin=0.5){
 
@@ -122,11 +122,13 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, sta
 
   #TODO: Reference all subsetting based on tt!
   else{
-    dt<-mean(diff(testy$tt))
+    dt<-min(diff(testy$tt))
     tmin<-min(testy$tt)
     tmax<-max(testy$tt)
     #get mean and SD of excursions based on reference period
-    wind0<-seq(from=ceiling(tmin+refwidth*dt/2), to=floor(tmax-refwidth*dt/2-1), by=stride)
+
+
+    wind0<-seq(from=ceiling(tmin+refwidth/2), to=floor(tmax-refwidth*dt/2-1), by=stride)
     #wind0<-seq(from=ceiling(refwidth/2), to=floor(length(refy)-(refwidth/2-1)), by=stride)
     ddiff0<-rep(NA, length(wind0))
 
