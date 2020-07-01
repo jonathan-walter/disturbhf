@@ -25,10 +25,10 @@
 
 #TODO: Add computations for peakz and peak.date
 
-recovalarm<-function(mwdistdiffz.obj, dthresh=c(2), rthresh=c(0.5)){
+recovalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
 
   #some basic error handling
-  if(!all(c("zz","wstart","wend") %in% colnames(mwdistdiffz.obj))){
+  if(!all(c("zz","wleft","wright") %in% colnames(mwdistdiffz.obj))){
     stop("mwdistdiffzz.obj must be output from function mwdistdiffz")
   }
 
@@ -39,8 +39,8 @@ recovalarm<-function(mwdistdiffz.obj, dthresh=c(2), rthresh=c(0.5)){
   }
 
   zz<-mwdistdiffz.obj$zz
-  wstart<-mwdistdiffz.obj$wstart
-  wend<-mwdistdiffz.obj$wend
+  wleft<-mwdistdiffz.obj$wleft
+  wright<-mwdistdiffz.obj$wright
 
   #are there even disturbances?
   if(max(zz)<dthresh){
@@ -52,30 +52,28 @@ recovalarm<-function(mwdistdiffz.obj, dthresh=c(2), rthresh=c(0.5)){
     print("no disturbances detected with provided values to dthresh")
   }
   else{
-    # zz.disturb<-zz < min(dthresh) | zz > max(dthresh)
     zz.recov<-zz < rthresh
     rle.disturb<-rle(zz > dthresh)
     dstarts<-cumsum(rle.disturb$lengths)[rle.disturb$values]-rle.disturb$lengths[rle.disturb$values]+1
     rle.recov<-rle(zz > min(rthresh) & zz < max(rthresh))
-    #rstarts<-cumsum(rle.recov$lengths)[rle.recov$values]
     recov.ind<-rep(NA, length(dstarts))
     for(ii in 1:length(dstarts)){
        recov.ind[ii]<-min(which(zz.recov & 1:length(zz.recov)>dstarts[ii]))
     }
 
-    if("POSIXct" %in% class(wstart)){
+    if("POSIXct" %in% class(wleft)){
       out<-data.frame(
-        dist.date=apply(cbind(wstart[dstarts],wend[dstarts]),1,med.date),
-        recov.date=apply(cbind(wstart[recov.ind],wend[recov.ind]),1,med.date)
+        dist.date=apply(cbind(wleft[dstarts],wright[dstarts]),1,med.date),
+        recov.date=apply(cbind(wleft[recov.ind],wright[recov.ind]),1,med.date)
       )
     }
-    else if(is.numeric(wstart)){
+    else if(is.numeric(wleft)){
       out<-data.frame(
-        dist.date=apply(cbind(wstart[dstarts],wend[dstarts]),1,median),
-        recov.date=apply(cbind(wstart[recov.ind],wend[recov.ind]),1,median)
+        dist.date=apply(cbind(wleft[dstarts],wright[dstarts]),1,median),
+        recov.date=apply(cbind(wleft[recov.ind],wright[recov.ind]),1,median)
       )
     }
-    else{stop("wstart and wend must be numeric or POSIXct (date)")}
+    else{stop("wleft and wright must be numeric or POSIXct (date)")}
 
   }
   out<-out[!duplicated(out$recov.date),]
@@ -83,6 +81,16 @@ recovalarm<-function(mwdistdiffz.obj, dthresh=c(2), rthresh=c(0.5)){
 
   peakz<-rep(NA, nrow(out))
   peak.date<-rep(NA, nrow(out))
+  wmid<-apply(cbind(wleft,wright),1,median)
+  dt<-diff(wleft)[1]
 
+  for(ii in 1:nrow(out)){
+    tmp<-zz[wmid>=out$dist.date[ii] & wmid<out$recov.date[ii]]
+    peakz[ii]<-max(tmp)
+    peak.date[ii]<-out$dist.date[ii] + which.max(tmp)*dt
+  }
+
+  out$peakz<-peakz
+  out$peak.date<-peak.date
   return(out)
 }

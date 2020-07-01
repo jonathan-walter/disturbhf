@@ -11,14 +11,14 @@ mwdistdiffz(
   refwidth = NULL,
   dx = 0.01,
   stride = 1,
-  stat = "mean",
   dmin = 0.5
 )
 }
 \arguments{
 \item{testy}{a data frame representing the "test" period, i.e., the period over which to search for disturbance and recovery.
 It must contain the columns \code{tt} and \code{yy}.
-\code{tt} is time in day-of-year format corresponding to observations of \code{yy}.
+\code{tt} contains numeric times assumed to be in units of days, or POSIXct (date) format corresponding to observations of \code{yy}.
+If \code{is.numeric(tt)}, tt is taken to be in units of day-of-year, with January 1 = doy 1.
 \code{yy} is a numeric time series.}
 
 \item{refy}{a data frame representiong the refrence period that \code{testy} is compared to.
@@ -32,14 +32,12 @@ It must contain the columns \code{tt} and \code{yy}, as in \code{testy}.}
 
 \item{stride}{number of time steps by which the moving window advances}
 
-\item{stat}{the summary statistic describing differences in the cdf between \code{yy} and \code{refy}. See details.}
-
 \item{dmin}{the fraction of data that must be present (i.e., non-NA) in test (and, if applicable, adaptive reference) moving windows to procede with computations.}
 }
 \value{
 \code{mwdistdiff} returns a data frame containing the columns:
-\item{wstart}{the time corresponding to the beginning (left edge) of the moving window}
-\item{wend}{the time corresponding to the end (right edge) of the moving window}
+\item{tleft}{the time corresponding to the beginning (left edge) of the moving window}
+\item{tright}{the time corresponding to the end (right edge) of the moving window}
 \item{ddiff}{differences from the reference distritbution}
 \item{zz}{Z-scores representing the strength of excursion from reference}
 }
@@ -52,9 +50,11 @@ It is used for identifying recovery times from disturbance in time series data.
 The value suppplied to \code{refwidth} determines whether a rolling reference window will be used,
 or if all of refy will be used as the reference period.
 Currently accepted values for \code{stat} are "mean" and "sum".
-\code{testy} must be a regularly spaced time series, but \code{refy} can be irregularly spaced; however, if
+\code{testy} must be a regularly spaced, ordered time series,
+but \code{refy} can be irregularly spaced, but must be ordered; however, if
 there is insufficient data then output will contain \code{NA}s.
 \code{dmin} takes into account NAs in time series as well as reference windows overlapping the edges or gaps in the time series.
+If \code{is.numeric(tt)}, the year is assumed to be 365 days long (i.e., there is no internal handling of leap years).
 }
 \examples{
 #need to add some

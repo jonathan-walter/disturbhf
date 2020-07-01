@@ -4,14 +4,14 @@
 \alias{recovalarm}
 \title{Sound an alarm for disturbances and determine recovery time}
 \usage{
-recovalarm(mwdistdiffz.obj, dthresh = c(2), rthresh = c(0.5))
+recovalarm(mwdistdiffz.obj, dthresh = 2, rthresh = 0.5)
 }
 \arguments{
 \item{mwdistdiffz.obj}{output from \code{mwdistdiffz}}
 
-\item{dthresh}{threshold quantile corresponding to a disturbance alarm}
+\item{dthresh}{threshold z-score corresponding to a disturbance alarm}
 
-\item{rthresh}{threshold quantile corresponding to recovery from disturbance}
+\item{rthresh}{threshold z-score corresponding to recovery from disturbance}
 }
 \value{
 \code{recovalarm} returns a data frame containing the columns:
