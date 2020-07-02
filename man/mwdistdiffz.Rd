@@ -49,12 +49,10 @@ It is used for identifying recovery times from disturbance in time series data.
 \details{
 The value suppplied to \code{refwidth} determines whether a rolling reference window will be used,
 or if all of refy will be used as the reference period.
-Currently accepted values for \code{stat} are "mean" and "sum".
-\code{testy} must be a regularly spaced, ordered time series,
-but \code{refy} can be irregularly spaced, but must be ordered; however, if
-there is insufficient data then output will contain \code{NA}s.
+\code{testy} and \code{refy} must be regularly spaced, ordered time series. If there are gaps in the time series, fill
+them with NAs prior to applying this function. If there are insufficient data then output will contain \code{NA}s.
 \code{dmin} takes into account NAs in time series as well as reference windows overlapping the edges or gaps in the time series.
-If \code{is.numeric(tt)}, the year is assumed to be 365 days long (i.e., there is no internal handling of leap years).
+Currently, the year is assumed to be 365 days long (i.e., there is no internal handling of leap years).
 }
 \examples{
 #need to add some

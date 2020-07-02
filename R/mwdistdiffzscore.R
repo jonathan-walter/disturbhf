@@ -25,12 +25,10 @@
 #'
 #' @details The value suppplied to \code{refwidth} determines whether a rolling reference window will be used,
 #' or if all of refy will be used as the reference period.
-#' Currently accepted values for \code{stat} are "mean" and "sum".
-#' \code{testy} must be a regularly spaced, ordered time series,
-#' but \code{refy} can be irregularly spaced, but must be ordered; however, if
-#' there is insufficient data then output will contain \code{NA}s.
+#' \code{testy} and \code{refy} must be regularly spaced, ordered time series. If there are gaps in the time series, fill
+#' them with NAs prior to applying this function. If there are insufficient data then output will contain \code{NA}s.
 #' \code{dmin} takes into account NAs in time series as well as reference windows overlapping the edges or gaps in the time series.
-#' If \code{is.numeric(tt)}, the year is assumed to be 365 days long (i.e., there is no internal handling of leap years).
+#' Currently, the year is assumed to be 365 days long (i.e., there is no internal handling of leap years).
 #'
 #' @author Jonathan Walter, \email{jaw3es@@virginia.edu}
 #'
@@ -74,7 +72,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
       #Get mu and sd for excursions during the reference period
       wind0<-seq(from=ceiling(wwidth/2)+1, to=length(refy$tt)-ceiling(wwidth/2), by=stride)
       ddiff0<-rep(NA, length(wind0))
-      dt<-min(diff(testy$tt))
+      dt<-diff(testy$tt)[1]
       for(ww in 1:length(wind0)){
         pd<-(wind0[ww]-(wwidth/2)):(wind0[ww]+wwidth/2-1) #get period for window
         if(mean(!is.na(refy$yy[pd])) < dmin){
@@ -180,7 +178,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
       refy$doy[refy$doy==0]<-365
 
       #Compute excursions in ref period and get mean and sd
-      dt<-min(diff(testy$doy))
+      dt<-diff(testy$doy)[1]
       tmin<-min(refy$tt)
       tmax<-max(refy$tt)
       wind<-seq(from=tmin, to=tmax, by=stride*dt)
@@ -214,7 +212,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
       sd.ref<-sd(ddiff, na.rm=T)
 
       #Compute excursions in test period and get z-score
-      dt<-min(diff(testy$doy))
+      dt<-diff(testy$doy)[1]
       tmin<-min(testy$tt)
       tmax<-max(testy$tt)
       wind<-seq(from=tmin, to=tmax, by=stride)
@@ -260,7 +258,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
 
       #Compute excursions in ref period and get mean and sd
       #many functions consider time in seconds, need to make sure to convert to days
-      dt<-min(diff(testy$doy))
+      dt<-diff(testy$doy)[1]
       tmin<-min(refy$tt)
       tmax<-max(refy$tt)
       wind<-seq(from=tmin, to=tmax, by=stride*dt*24*60*60)
@@ -293,7 +291,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
       sd.ref<-sd(ddiff, na.rm=T)
 
       #Compute excursions in test period and get z-score
-      dt<-min(diff(testy$doy))
+      dt<-diff(testy$doy)[1]
       tmin<-min(testy$tt)
       tmax<-max(testy$tt)
       wind<-seq(from=tmin, to=tmax, by=stride*dt*24*60*60)
