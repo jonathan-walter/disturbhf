@@ -2,5 +2,5 @@
 
 export(alarmfilter)
 export(decimal_doy)
+export(disturbalarm)
 export(mwdistdiffz)
-export(recovalarm)

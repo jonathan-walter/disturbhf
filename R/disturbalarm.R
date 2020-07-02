@@ -25,7 +25,7 @@
 
 #TODO: Add computations for peakz and peak.date
 
-recovalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
+disturbalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
 
   #some basic error handling
   if(!all(c("zz","wleft","wright") %in% colnames(mwdistdiffz.obj))){
