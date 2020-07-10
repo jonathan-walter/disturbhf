@@ -186,9 +186,9 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
 
       for(ww in 1:length(wind)){
 
-        ltest<-wind[ww]-refwidth*dt/2 #left side of "test" window
+        ltest<-wind[ww]-wwidth*dt/2 #left side of "test" window
         if(ltest < tmin){next} #skip indices where window overhangs beginning of time series
-        rtest<-wind[ww]+refwidth*dt/2 #right side of "test" window
+        rtest<-wind[ww]+wwidth*dt/2 #right side of "test" window
         if(rtest > tmax){break} #stop computation when window overhangs end of time series
         tpd<-testy$tt > ltest & testy$tt <= rtest
 
@@ -200,7 +200,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
 
         #check if sufficient non-missing values in reference and test periods
         if(mean(!is.na(refy$yy[tpd])) < dmin | mean(!is.na(refy$yy[rpd])) < dmin){
-          ddiff0[ww]<-NA
+          ddiff[ww]<-NA
           next
         }
         #subref<-refy$yy[rpd]
@@ -221,9 +221,9 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
 
       for(ww in 1:length(wind)){
 
-        ltest<-wind[ww]-refwidth*dt/2 #left side of test window
+        ltest<-wind[ww]-wwidth*dt/2 #left side of test window
         if(ltest < tmin){next} #skip indices where window overhangs beginning of time series
-        rtest<-wind[ww]+refwidth*dt/2 #right side of test window
+        rtest<-wind[ww]+wwidth*dt/2 #right side of test window
         if(rtest > tmax){break} #stop computation when window overhands end of time series
         tpd<-testy$tt > ltest & testy$tt <= rtest
 
@@ -235,7 +235,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
 
         #check if sufficient non-missing values in reference and test periods
         if(mean(!is.na(testy$yy[tpd])) < dmin | mean(!is.na(refy$yy[rpd])) < dmin){
-          ddiff0[ww]<-NA
+          ddiff[ww]<-NA
           next
         }
 
