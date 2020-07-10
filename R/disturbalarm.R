@@ -43,7 +43,7 @@ disturbalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
   wright<-mwdistdiffz.obj$wright
 
   #are there even disturbances?
-  if(max(zz)<dthresh){
+  if(max(zz, na.rm=T)<dthresh){
     out<-data.frame(dist.date=NA
                     ,recov.date=NA
                     ,tdiff=NA
@@ -55,6 +55,7 @@ disturbalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
     zz.recov<-zz < rthresh
     rle.disturb<-rle(zz > dthresh)
     dstarts<-cumsum(rle.disturb$lengths)[rle.disturb$values]-rle.disturb$lengths[rle.disturb$values]+1
+    dstarts<-dstarts[!is.na(dstarts)]
     rle.recov<-rle(zz > min(rthresh) & zz < max(rthresh))
     recov.ind<-rep(NA, length(dstarts))
     for(ii in 1:length(dstarts)){
@@ -86,7 +87,7 @@ disturbalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
 
   for(ii in 1:nrow(out)){
     tmp<-zz[wmid>=out$dist.date[ii] & wmid<out$recov.date[ii]]
-    peakz[ii]<-max(tmp)
+    peakz[ii]<-max(tmp, na.rm=T)
     peak.date[ii]<-out$dist.date[ii] + which.max(tmp)*dt
   }
 
