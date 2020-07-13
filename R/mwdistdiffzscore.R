@@ -190,11 +190,11 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         if(ltest < tmin){next} #skip indices where window overhangs beginning of time series
         rtest<-wind[ww]+wwidth*dt/2 #right side of "test" window
         if(rtest > tmax){break} #stop computation when window overhangs end of time series
-        tpd<-testy$tt > ltest & testy$tt <= rtest
+        tpd<-refy$tt > ltest & refy$tt <= rtest
 
-        lref<-testy$doy[testy$tt==wind[ww]]-refwidth*dt/2 %% 365 #left side of reference window
+        lref<-refy$doy[abs(refy$tt-wind[ww]) < dt/10]-refwidth*dt/2 %% 365 #left side of reference window
         if(lref==0){lref==365}
-        rref<-testy$doy[testy$tt==wind[ww]]+refwidth*dt/2 %% 365 #right side of reference window
+        rref<-refy$doy[abs(refy$tt-wind[ww]) < dt/10]+refwidth*dt/2 %% 365 #right side of reference window
         if(rref==0){rref==365}
         rpd<-refy$doy > lref & refy$doy <= rref
 
@@ -227,9 +227,9 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         if(rtest > tmax){break} #stop computation when window overhands end of time series
         tpd<-testy$tt > ltest & testy$tt <= rtest
 
-        lref<-testy$doy[testy$tt==wind[ww]]-refwidth*dt/2 %% 365 #left side of reference window
+        lref<-testy$doy[abs(testy$tt-wind[ww]) < dt/10]-refwidth*dt/2 %% 365 #left side of reference window
         if(lref==0){lref==365}
-        rref<-testy$doy[testy$tt==wind[ww]]+refwidth*dt/2 %% 365 #right side of reference window
+        rref<-testy$doy[abs(testy$tt-wind[ww]) < dt/10]+refwidth*dt/2 %% 365 #right side of reference window
         if(rref==0){rref==365}
         rpd<-refy$doy > lref & refy$doy <= rref
 

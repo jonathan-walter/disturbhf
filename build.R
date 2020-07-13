@@ -12,4 +12,4 @@ check("disturbhf")
 
 #install("disturbhf")
 #library("disturbhf")
-#install_github("jonathan-walter/disturbhf")
+install_github("jonathan-walter/disturbhf")
