@@ -76,19 +76,26 @@ disturbalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
     }
     else{stop("wleft and wright must be numeric or POSIXct (date)")}
 
-  }
-  out<-out[!duplicated(out$recov.date),]
-  out$tdiff<-out$recov.date-out$dist.date
+    out<-out[!duplicated(out$recov.date),]
+    out$tdiff<-out$recov.date-out$dist.date
 
-  peakz<-rep(NA, nrow(out))
-  peak.date<-rep(NA, nrow(out))
-  wmid<-apply(cbind(wleft,wright),1,median)
-  dt<-diff(wleft)[1]
+    peakz<-rep(NA, nrow(out))
+    peak.date<-rep(NA, nrow(out))
+    wmid<-apply(cbind(wleft,wright),1,median)
+    dt<-diff(wleft)[1]
 
-  for(ii in 1:nrow(out)){
-    tmp<-zz[wmid>=out$dist.date[ii] & wmid<out$recov.date[ii]]
-    peakz[ii]<-max(tmp, na.rm=T)
-    peak.date[ii]<-out$dist.date[ii] + which.max(tmp)*dt
+    for(ii in 1:nrow(out)){
+      if(is.na(out$recov.date[ii])){
+        tmp<-zz[wmid>=out$dist.date[ii] & wmid<max(wright)]
+        peakz[ii]<-max(tmp, na.rm=T)
+        peak.date[ii]<-out$dist.date[ii] + which.max(tmp)*dt
+      }
+      else{
+        tmp<-zz[wmid>=out$dist.date[ii] & wmid<out$recov.date[ii]]
+        peakz[ii]<-max(tmp, na.rm=T)
+        peak.date[ii]<-out$dist.date[ii] + which.max(tmp)*dt
+      }
+    }
   }
 
   out$peakz<-peakz
