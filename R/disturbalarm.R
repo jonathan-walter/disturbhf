@@ -96,9 +96,9 @@ disturbalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
         peak.date[ii]<-out$dist.date[ii] + which.max(tmp)*dt
       }
     }
+    out$peakz<-peakz
+    out$peak.date<-peak.date
   }
 
-  out$peakz<-peakz
-  out$peak.date<-peak.date
   return(out)
 }
