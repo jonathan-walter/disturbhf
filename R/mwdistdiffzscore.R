@@ -245,8 +245,8 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         zz[ww]<-(ddiff[ww]-mu.ref)/sd.ref
 
       }
-      wleft<-testy$tt[wind]-wwidth*dt/2
-      wright<-testy$tt[wind]+wwidth*dt/2
+      wleft<-wind-wwidth*dt/2
+      wright<-wind+wwidth*dt/2
     }
 
     #for tt as a date
