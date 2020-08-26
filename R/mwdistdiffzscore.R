@@ -47,7 +47,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
   if(!is.data.frame(refy) | !"tt" %in% colnames(refy) | !"yy" %in% colnames(refy)){
     stop("refy must be a data frame containing the columns 'tt' and 'yy'")
   }
-  if(class(testy$tt) != class(refy$tt)){
+  if(any(class(testy$tt) != class(refy$tt))){
     stop("testy$tt and refy$tt must have same format")
   }
 
@@ -114,7 +114,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
       wright<-testy$tt[wind]+wwidth*dt/2
     }
 
-    if(grepl("POSIX",refy$tt)[1]){
+    if(any(grepl("POSIX",class(refy$tt)))){
 
       #Get mu and sd for excursions during the reference period
       wind0<-seq(from=ceiling(wwidth/2)+1, to=length(refy$tt)-ceiling(wwidth/2), by=stride)
@@ -142,8 +142,8 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
       refdist<-ecdf(refy$yy) #make ecdf for reference period
 
       wind<-seq(from=ceiling(wwidth/2)+1, to=length(testy$tt)-ceiling(wwidth/2), by=stride)
-      tleft<-refy$tt[wind-wwidth/2]
-      tright<-refy$tt[wind+wwidth/2]
+      # tleft<-refy$tt[wind-wwidth/2]
+      # tright<-refy$tt[wind+wwidth/2]
       ddiff<-rep(NA, length(wind))
       zz<-rep(NA, length(wind))
 
@@ -250,7 +250,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
     }
 
     #for tt as a date
-    if(grepl("POSIX", class(testy$tt))){
+    if(any(grepl("POSIX", class(testy$tt)))){
 
       #compute decimal day of year corresponding to ttt
       testy$doy <- decimal_doy(testy$tt)
