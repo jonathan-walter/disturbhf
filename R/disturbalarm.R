@@ -33,9 +33,9 @@ disturbalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
   }
 
   #helper function to get midpoints of moving windows
-  med.date<-function(d){
+  med.date<-function(d1, d2){
     #by design d[1] is the start and d[2] is the end
-    return(d[1] + floor((d[2]-d[1])/2))
+    return(d1 + floor((d2-d1)/2))
   }
 
   zz<-mwdistdiffz.obj$zz
@@ -63,10 +63,17 @@ disturbalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
     }
 
     if("POSIXct" %in% class(wleft)){
-      out<-data.frame(
-        dist.date=apply(cbind(wleft[dstarts],wright[dstarts]),1,med.date),
-        recov.date=apply(cbind(wleft[recov.ind],wright[recov.ind]),1,med.date)
-      )
+
+      dist.date<-.POSIXct(integer(length(dstarts)))
+      recov.date<-.POSIXct(integer(length(dstarts)))
+
+      for(ii in 1:length(dstarts)){
+        dist.date[ii]<-med.date(wleft[dstarts[ii]], wright[dstarts[ii]])
+        recov.date[ii]<-med.date(wleft[recov.ind[ii]], wright[recov.ind[ii]])
+
+      }
+
+      out<-data.frame(dist.date=dist.date, recov.date=recov.date)
     }
     else if(is.numeric(wleft)){
       out<-data.frame(
@@ -80,7 +87,12 @@ disturbalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
     out$tdiff<-out$recov.date-out$dist.date
 
     peakz<-rep(NA, nrow(out))
-    peak.date<-rep(NA, nrow(out))
+    if(is.numeric(wleft)){
+      peak.date<-rep(NA, nrow(out))
+    }
+    if("POSIXct" %in% class(wleft)){
+      peak.date<-.POSIXct(integer(nrow(out)))
+    }
     wmid<-apply(cbind(wleft,wright),1,median)
     dt<-diff(wleft)[1]
 

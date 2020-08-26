@@ -116,9 +116,12 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
 
     if(any(grepl("POSIX",class(refy$tt)))){
 
+      dt<-diff(testy$tt)[1]
+
       #Get mu and sd for excursions during the reference period
       wind0<-seq(from=ceiling(wwidth/2)+1, to=length(refy$tt)-ceiling(wwidth/2), by=stride)
       ddiff0<-rep(NA, length(wind0))
+
       for(ww in 1:length(wind0)){
         pd<-(wind0[ww]-(wwidth/2)):(wind0[ww]+wwidth/2-1) #get period for window
         if(mean(!is.na(refy$yy[pd])) < dmin){
@@ -158,8 +161,8 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
           zz[ww]<-(ddiff[ww]-mu.ref)/sd.ref
         }
       }
-      wleft<-testy$tt[wind]-wwidth*dt/2*24*60*60
-      wright<-testy$tt[wind]+wwidth*dt/2*24*60*60
+      wleft<-testy$tt[wind]-wwidth*dt/2#*24*60*60
+      wright<-testy$tt[wind]+wwidth*dt/2#*24*60*60
     }
 
   }
@@ -192,9 +195,9 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         if(rtest > tmax){break} #stop computation when window overhangs end of time series
         tpd<-refy$tt > ltest & refy$tt <= rtest
 
-        lref<-refy$doy[abs(refy$tt-wind[ww]) < dt/10]-refwidth*dt/2 %% 365 #left side of reference window
+        lref<-(refy$doy[abs(refy$tt-wind[ww]) < dt/10]-refwidth*dt/2) %% 365 #left side of reference window
         if(lref==0){lref==365}
-        rref<-refy$doy[abs(refy$tt-wind[ww]) < dt/10]+refwidth*dt/2 %% 365 #right side of reference window
+        rref<-(refy$doy[abs(refy$tt-wind[ww]) < dt/10]+refwidth*dt/2) %% 365 #right side of reference window
         if(rref==0){rref==365}
         rpd<-refy$doy > lref & refy$doy <= rref
 
@@ -227,11 +230,16 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         if(rtest > tmax){break} #stop computation when window overhands end of time series
         tpd<-testy$tt > ltest & testy$tt <= rtest
 
-        lref<-testy$doy[abs(testy$tt-wind[ww]) < dt/10]-refwidth*dt/2 %% 365 #left side of reference window
+        lref<-(testy$doy[abs(testy$tt-wind[ww]) < dt/10]-refwidth*dt/2) %% 365 #left side of reference window
         if(lref==0){lref==365}
-        rref<-testy$doy[abs(testy$tt-wind[ww]) < dt/10]+refwidth*dt/2 %% 365 #right side of reference window
+        rref<-(testy$doy[abs(testy$tt-wind[ww]) < dt/10]+refwidth*dt/2) %% 365 #right side of reference window
         if(rref==0){rref==365}
-        rpd<-refy$doy > lref & refy$doy <= rref
+        if(rref > lref){
+          rpd<-refy$doy > lref & refy$doy <= rref
+        }
+        if(rref < lref){
+          rpd<-refy$doy > lref | refy$doy <= rref
+        }
 
         #check if sufficient non-missing values in reference and test periods
         if(mean(!is.na(testy$yy[tpd])) < dmin | mean(!is.na(refy$yy[rpd])) < dmin){
@@ -259,24 +267,30 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
       #Compute excursions in ref period and get mean and sd
       #many functions consider time in seconds, need to make sure to convert to days
       dt<-diff(testy$doy)[1]
+      dtt<-diff(testy$tt)[1]
       tmin<-min(refy$tt)
       tmax<-max(refy$tt)
-      wind<-seq(from=tmin, to=tmax, by=stride*dt*24*60*60)
+      wind<-seq(from=tmin, to=tmax, by=stride*dtt)#*24*60*60)
       ddiff<-rep(NA, length(wind))
 
       for(ww in 1:length(wind)){
 
-        ltest<-wind[ww]-refwidth*dt/2*24*60*60 #left side of "test" window
+        ltest<-wind[ww]-refwidth*dtt/2#*24*60*60 #left side of "test" window
         if(ltest < tmin){next} #skip indices where window overhangs beginning of time series
-        rtest<-wind[ww]+refwidth*dt/2*24*60*60 #right side of "test" window
+        rtest<-wind[ww]+refwidth*dtt/2#*24*60*60 #right side of "test" window
         if(rtest > tmax){break} #stop computation when window overhangs end of time series
         tpd<-refy$tt > ltest & refy$tt <= rtest
 
-        lref<-testy$doy[testy$tt==wind[ww]]-refwidth*dt/2 %% 365 #left side of reference window
+        lref<-(testy$doy[testy$tt==wind[ww]]-refwidth*dt/2) %% 365 #left side of reference window
         if(lref==0){lref==365}
-        rref<-testy$doy[testy$tt==wind[ww]]+refwidth*dt/2 %% 365 #right side of reference window
+        rref<-(testy$doy[testy$tt==wind[ww]]+refwidth*dt/2) %% 365 #right side of reference window
         if(rref==0){rref==365}
-        rpd<-refy$doy > lref & refy$doy <= rref
+        if(rref > lref){
+          rpd<-refy$doy > lref & refy$doy <= rref
+        }
+        if(rref < lref){
+          rpd<-refy$doy > lref | refy$doy <= rref
+        }
 
         #check if sufficient non-missing values in reference and test periods
         if(mean(!is.na(refy$yy[tpd])) < dmin | mean(!is.na(refy$yy[rpd])) < dmin){
@@ -300,9 +314,9 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
 
       for(ww in 1:length(wind)){
 
-        ltest<-wind[ww]-refwidth*dt/2*24*60*60 #left side of test window
+        ltest<-wind[ww]-refwidth*dt#/2*24*60*60 #left side of test window
         if(ltest < tmin){next} #skip indices where window overhangs beginning of time series
-        rtest<-wind[ww]+refwidth*dt/2*24*60*60 #right side of test window
+        rtest<-wind[ww]+refwidth*dt#/2*24*60*60 #right side of test window
         if(rtest > tmax){break} #stop computation when window overhands end of time series
         tpd<-testy$tt > ltest & testy$tt <= rtest
 
@@ -324,8 +338,8 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         zz[ww]<-(ddiff[ww]-mu.ref)/sd.ref
 
       }
-      wleft<-wind-wwidth*dt/2*24*60*60
-      wright<-wind+wwidth*dt/2*24*60*60
+      wleft<-wind-wwidth*dtt/2#*24*60*60
+      wright<-wind+wwidth*dtt/2#*24*60*60
     }
 
   }
