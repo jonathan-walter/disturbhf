@@ -252,7 +252,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
     #for tt as a date
     if(any(grepl("POSIX", class(testy$tt)))){
 
-      #compute decimal day of year corresponding to ttt
+      #compute decimal day of year corresponding to tt
       testy$doy <- decimal_doy(testy$tt)
       refy$doy <- decimal_doy(refy$tt)
 
