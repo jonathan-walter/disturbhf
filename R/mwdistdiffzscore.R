@@ -230,7 +230,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
       dt<-diff(testy$doy)[1]
       tmin<-min(testy$tt)
       tmax<-max(testy$tt)
-      wind<-seq(from=tmin, to=tmax, by=stride)
+      wind<-seq(from=tmin, to=tmax, by=stride*dt)
       ddiff<-rep(NA, length(wind))
       zz<-rep(NA, length(wind))
 
