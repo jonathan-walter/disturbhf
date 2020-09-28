@@ -180,7 +180,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
       refy$doy <- refy$tt %% 365
       refy$doy[refy$doy==0]<-365
 
-      #Compute excursions in ref period and get mean and sd
+      #Compute excursions in ref period and get mean and sd; NOTE: this is the 'normal' difference between distributions of potentially different sizes
       dt<-diff(testy$doy)[1]
       tmin<-min(refy$tt)
       tmax<-max(refy$tt)
@@ -220,11 +220,16 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         }
         #subref<-refy$yy[rpd]
         refdist<-ecdf(refy$yy[rpd])
-        wdist<-ecdf(testy$yy[tpd])
+        wdist<-ecdf(refy$yy[tpd]) # should this be refy?
         ddiff[ww]<-mean((refdist(xx)-wdist(xx))^2)
       }
       mu.ref<-mean(ddiff, na.rm=T)
       sd.ref<-sd(ddiff, na.rm=T)
+      # if window sizes are the same, don't change ddiff
+      if(wwidth == refwidth){
+        mu.ref = 0
+        sd.ref = 1
+      }
 
       #Compute excursions in test period and get z-score
       dt<-diff(testy$doy)[1]
@@ -264,11 +269,23 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
           ddiff[ww]<-NA
           next
         }
-
-        refdist<-ecdf(refy$yy[rpd])
-        wdist<-ecdf(testy$yy[tpd])
-        ddiff[ww]<-mean((refdist(xx)-wdist(xx))^2)
-        zz[ww]<-(ddiff[ww]-mu.ref)/sd.ref
+        
+        overlapRange_min = max(c(min(refy$yy[rpd], na.rm=TRUE), min(testy$yy[tpd], na.rm=TRUE)), na.rm=TRUE)
+        overlapRange_max = min(c(max(refy$yy[rpd], na.rm=TRUE), max(testy$yy[tpd], na.rm=TRUE)), na.rm=TRUE)
+        propOverlapping = sum(testy$yy[tpd] >= overlapRange_min & testy$yy[tpd] <= overlapRange_max, na.rm=TRUE) / sum(is.na(testy$yy[tpd]))
+        if(overlapRange_max < overlapRange_min){
+          ddiff[ww] = 0
+          zz[ww] = 0
+        }else{
+          
+          xx_overlap = seq(from=overlapRange_min, to=overlapRange_max, length.out=5000)
+          ref_yy_overlap = refy$yy[rpd & !is.na(refy$yy) & refy$yy > overlapRange_min & refy$yy < overlapRange_max]
+          test_yy_overlap = testy$yy[tpd & !is.na(testy$yy) & testy$yy > overlapRange_min & testy$yy < overlapRange_max]
+          refdist<-ecdf(ref_yy_overlap)
+          wdist<-ecdf(test_yy_overlap)
+          ddiff[ww]<- 1 - propOverlapping*(1-mean((refdist(xx_overlap)-wdist(xx_overlap))^2))
+          zz[ww]<-(ddiff[ww]-mu.ref)/sd.ref
+        }
 
       }
       wleft<-wind-wwidth*dt/2
