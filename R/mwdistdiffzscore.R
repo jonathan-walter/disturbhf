@@ -220,7 +220,7 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         }
         #subref<-refy$yy[rpd]
         refdist<-ecdf(refy$yy[rpd])
-        wdist<-ecdf(testy$yy[tpd])
+        wdist<-ecdf(refy$yy[tpd])
         ddiff[ww]<-mean((refdist(xx)-wdist(xx))^2)
       }
       mu.ref<-mean(ddiff, na.rm=T)
