@@ -272,10 +272,13 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         
         overlapRange_min = max(c(min(refy$yy[rpd], na.rm=TRUE), min(testy$yy[tpd], na.rm=TRUE)), na.rm=TRUE)
         overlapRange_max = min(c(max(refy$yy[rpd], na.rm=TRUE), max(testy$yy[tpd], na.rm=TRUE)), na.rm=TRUE)
-        propOverlapping = sum(testy$yy[tpd] >= overlapRange_min & testy$yy[tpd] <= overlapRange_max, na.rm=TRUE) / sum(is.na(testy$yy[tpd]))
-        if(overlapRange_max < overlapRange_min){
-          ddiff[ww] = 0
-          zz[ww] = 0
+        nOverlapping_ref = sum(refy$yy[rpd] >= overlapRange_min & refy$yy[rpd] <= overlapRange_max, na.rm=TRUE)
+        nOverlapping_test = sum(testy$yy[tpd] >= overlapRange_min & testy$yy[tpd] <= overlapRange_max, na.rm=TRUE)
+        propOverlapping_ref = nOverlapping_ref / sum(!is.na(refy$yy[rpd]))
+        propOverlapping_test = nOverlapping_test / sum(!is.na(testy$yy[tpd]))
+        if(overlapRange_max < overlapRange_min | propOverlapping_test < 0.1 | propOverlapping_ref < 0.1){
+          ddiff[ww] = 1
+          zz[ww]<-(ddiff[ww]-mu.ref)/sd.ref
         }else{
           
           xx_overlap = seq(from=overlapRange_min, to=overlapRange_max, length.out=5000)
