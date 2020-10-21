@@ -32,7 +32,7 @@ alarmfilter<-function(recovalarm.obj, dmin.dist, dmin.recov=dmin.dist){
         if(out$dist.date[ii+1] - out$recov.date[ii] < dmin.recov){
           out$recov.date[ii]<-out$recov.date[ii+1]
           out$tdiff[ii]<-out$recov.date[ii]-out$dist.date[ii]
-          drop1<-c(drop1, ii)
+          drop1<-c(drop1, ii+1)
         }
       }
       if(!is.null(drop1)){

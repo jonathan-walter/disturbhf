@@ -23,7 +23,6 @@
 #' @export
 #'
 
-#TODO: Add computations for peakz and peak.date
 
 disturbalarm<-function(mwdistdiffz.obj, dthresh=2, rthresh=0.5){
 
