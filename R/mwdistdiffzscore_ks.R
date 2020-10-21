@@ -1,6 +1,6 @@
 #' Calculate differences in continuous distribution functions between reference and moving window observations
 #'
-#' \code{mwdistdiffz} computes differences between the continuous distribution functions (cdf) for observations within
+#' \code{mwdistdiffz_ks} computes differences between the continuous distribution functions (cdf) for observations within
 #' a moving window and a reference distribution, and the z-scores of differences relative to samples of the reference distribution.
 #' It is used for identifying recovery times from disturbance in time series data.
 #'
