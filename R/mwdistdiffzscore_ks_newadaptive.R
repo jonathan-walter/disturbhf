@@ -1,7 +1,3 @@
-## In this version the referencing for the reference period in the adaptive window is broken.
-
-
-
 
 #' Calculate differences in continuous distribution functions between reference and moving window observations
 #'
@@ -174,6 +170,13 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
 
   # -----------------------------------------------------------------------------------------------
   # This is with the seasonal adaptive reference window
+
+  # this needs to be fixed so that we select a reference window based on DOY
+  # and then compare
+
+
+
+
   if(!is.null(refwidth)){
 
     #for numeric tt ...
@@ -185,14 +188,21 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
       refy$doy <- refy$tt %% 365
       refy$doy[refy$doy==0]<-365
       dt<-diff(testy$doy)[1]
-      tmin<-min(testy$tt)
-      tmax<-max(testy$tt)
+      tmin<-min(refy$tt)
+      tmax<-max(refy$tt)
+
+
 
       #Compute excursions in ref period and get mean and sd
       wind<-seq(from=tmin, to=tmax, by=stride*dt)
       ddiff<-rep(NA, length(wind))
 
       for(ww in 1:length(wind)){
+
+        wind.ww<-wind[ww] %% 365
+        if(wind.ww==0){wind.ww<-365}
+
+        if(!wind.ww %in% testy$doy){next}
 
         ltest<-wind[ww]-wwidth*dt/2 #left side of "test" window
         if(ltest < tmin){next} #skip indices where window overhangs beginning of time series
@@ -205,9 +215,9 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
           tpd<-refy$tt > ltest | refy$tt <= rtest
         }
 
-        lref<-(testy$doy[abs(refy$tt-wind[ww]) < dt/10]-refwidth*dt/2) %% 365 #left side of reference window
+        lref<-(refy$doy[abs(refy$tt-wind[ww]) < dt/10]-refwidth*dt/2) %% 365 #left side of reference window
         if(lref==0){lref==365}
-        rref<-(testy$doy[abs(refy$tt-wind[ww]) < dt/10]+refwidth*dt/2) %% 365 #right side of reference window
+        rref<-(refy$doy[abs(refy$tt-wind[ww]) < dt/10]+refwidth*dt/2) %% 365 #right side of reference window
         if(rref==0){rref==365}
         if(rref > lref){
           rpd<-refy$doy > lref & refy$doy <= rref
@@ -228,6 +238,8 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
       sd.ref<-sd(ddiff, na.rm=T)
 
       #Compute excursions in test period and get z-score
+      tmin<-min(testy$tt)
+      tmax<-max(testy$tt)
       wind<-seq(from=tmin, to=tmax, by=stride*dt)
       ddiff<-rep(NA, length(wind))
       zz<-rep(NA, length(wind))
@@ -280,14 +292,16 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
       refy$doy <- decimal_doy(refy$tt)
       dt<-diff(testy$doy)[1] #time difference in decimal days
       dtt<-diff(testy$tt)[1] #time difference in time units
-      tmin<-min(testy$tt) # minimum time in test period
-      tmax<-max(testy$tt) # maximum time in test period
+      tmin<-min(refy$tt) # minimum time in test period
+      tmax<-max(refy$tt) # maximum time in test period
 
       #Compute excursions in ref period and get mean and sd
       wind<-seq(from=tmin, to=tmax, by=stride*dtt)
       ddiff<-rep(NA, length(wind))
 
       for(ww in 1:length(wind)){
+
+        if(!floor(decimal_doy(wind[ww])) %in% testy$doy){next} #skip if doy of window is not part of test period
 
         ltest<-wind[ww]-wwidth*dtt/2 #left side of "test" window
         if(ltest < tmin){next} #skip indices where window overhangs beginning of time series
@@ -300,10 +314,10 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
           tpd<-refy$tt > ltest | refy$tt <= rtest
         }
 
-        lref<-(testy$doy[abs(testy$tt-wind[ww]) < dtt/10]-refwidth*dt/2) %% 365 #left side of reference window
+        lref<-(refy$doy[abs(refy$tt-wind[ww]) < dtt/10]-refwidth*dt/2) %% 365 #left side of reference window
         if(length(lref)==0){next} #enables skipping indices when time series are gappy
         if(lref==0){lref==365}
-        rref<-(testy$doy[abs(testy$tt-wind[ww]) < dtt/10]+refwidth*dt/2) %% 365 #right side of reference window
+        rref<-(refy$doy[abs(refy$tt-wind[ww]) < dtt/10]+refwidth*dt/2) %% 365 #right side of reference window
         if(rref==0){rref==365}
         if(rref > lref){
           rpd<-refy$doy > lref & refy$doy <= rref
@@ -324,9 +338,12 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
       sd.ref<-sd(ddiff, na.rm=T)
 
       #Compute excursions in test period and get z-score
+      tmin<-min(testy$tt) # minimum time in test period
+      tmax<-max(testy$tt) # maximum time in test period
       wind<-seq(from=tmin, to=tmax, by=stride*dtt)
       ddiff<-rep(NA, length(wind))
       zz<-rep(NA, length(wind))
+
 
       for(ww in 1:length(wind)){
 
