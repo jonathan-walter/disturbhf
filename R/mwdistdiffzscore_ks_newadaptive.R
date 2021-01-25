@@ -171,12 +171,6 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
   # -----------------------------------------------------------------------------------------------
   # This is with the seasonal adaptive reference window
 
-  # this needs to be fixed so that we select a reference window based on DOY
-  # and then compare
-
-
-
-
   if(!is.null(refwidth)){
 
     #for numeric tt ...
@@ -202,7 +196,7 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
         wind.ww<-wind[ww] %% 365
         if(wind.ww==0){wind.ww<-365}
 
-        if(!wind.ww %in% testy$doy){next}
+        if(wind.ww < min(testy$doy) | wind.ww > max(testy$doy)){next}
 
         ltest<-wind[ww]-wwidth*dt/2 #left side of "test" window
         if(ltest < tmin){next} #skip indices where window overhangs beginning of time series
@@ -227,7 +221,7 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
         }
 
         #check if sufficient non-missing values in reference and test periods
-        if(sum(!is.na(refy$yy[tpd]))/wwidth/dt < dmin | sum(!is.na(refy$yy[rpd]))/refwidth/dt < dmin){
+        if(sum(!is.na(refy$yy[tpd]))/wwidth < dmin | sum(!is.na(refy$yy[rpd]))/refwidth < dmin){
           next
         }
         refdist<-ecdf(refy$yy[rpd])
@@ -301,7 +295,7 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
 
       for(ww in 1:length(wind)){
 
-        if(!floor(decimal_doy(wind[ww])) %in% testy$doy){next} #skip if doy of window is not part of test period
+        if(floor(decimal_doy(wind[ww])) < min(testy$doy) | floor(decimal_doy(wind[ww])) > max(testy$doy)){next} #skip if doy of window is not part of test period
 
         ltest<-wind[ww]-wwidth*dtt/2 #left side of "test" window
         if(ltest < tmin){next} #skip indices where window overhangs beginning of time series
@@ -327,7 +321,7 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
         }
 
         #check if sufficient non-missing values in reference and test periods
-        if(sum(!is.na(refy$yy[tpd]))/wwidth/dt < dmin | sum(!is.na(refy$yy[rpd]))/refwidth/dt < dmin){
+        if(sum(!is.na(refy$yy[tpd]))/wwidth < dmin | sum(!is.na(refy$yy[rpd]))/refwidth < dmin){
           next
         }
         refdist<-ecdf(refy$yy[rpd])
@@ -371,7 +365,7 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
         }
 
         #check if sufficient non-missing values in reference and test periods
-        if(sum(!is.na(testy$yy[tpd]))/wwidth/dt < dmin | sum(!is.na(refy$yy[rpd]))/refwidth/dt < dmin){
+        if(sum(!is.na(testy$yy[tpd]))/wwidth < dmin | sum(!is.na(refy$yy[rpd]))/refwidth < dmin){
           next
         }
 
