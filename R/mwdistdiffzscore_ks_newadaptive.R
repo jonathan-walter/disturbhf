@@ -79,17 +79,17 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
         if(mean(!is.na(refy$yy[pd])) < dmin){
           ddiff0[ww]<-NA
         }
-        else if(any(diff(diff(refy$tt[pd]))>1e-6)){
-          #returns NA if any times are skipped
-          ddiff0[ww]<-NA
-        }
+        # else if(any(diff(diff(refy$tt[pd]))>1e-6)){
+        #   #returns NA if any times are skipped
+        #   ddiff0[ww]<-NA
+        # }
         else{
           tmprefdist<-ecdf(refy$yy[-pd])
           tmpwdist<-ecdf(refy$yy[pd])
           ddiff0[ww]<-max(abs(tmprefdist(xx)-tmpwdist(xx)))
         }
       }
-      rm(tmprefdist,tmpwdist)
+      #rm(tmprefdist,tmpwdist)
       mu.ref<-mean(ddiff0, na.rm=T)
       sd.ref<-sd(ddiff0, na.rm=T)
 
@@ -128,17 +128,17 @@ mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, 
         if(mean(!is.na(refy$yy[pd])) < dmin){
           ddiff0[ww]<-NA
         }
-        else if(any(diff(diff(refy$tt[pd]))>1e-6)){
-          #returns NA if any times are skipped
-          ddiff0[ww]<-NA
-        }
+        # else if(any(diff(diff(refy$tt[pd]))>1e-6)){
+        #   #returns NA if any times are skipped
+        #   ddiff0[ww]<-NA
+        # }
         else{
           tmprefdist<-ecdf(refy$yy[-pd])
           tmpwdist<-ecdf(refy$yy[pd])
           ddiff0[ww]<-max(abs(tmprefdist(xx)-tmpwdist(xx)))
         }
       }
-      rm(tmprefdist,tmpwdist)
+      #rm(tmprefdist,tmpwdist)
       mu.ref<-mean(ddiff0, na.rm=T)
       sd.ref<-sd(ddiff0, na.rm=T)
 
