@@ -39,7 +39,7 @@
 #' @export
 
 ## create DOY column to index off of, accept tt as numeric (1,Inf), or date
-mwdistdiffz_ks<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmin=0.5){
+mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmin=0.5){
 
   #a little error handling
   if(!is.data.frame(testy) | !"tt" %in% colnames(testy) | !"yy" %in% colnames(testy)){
