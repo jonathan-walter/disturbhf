@@ -17,6 +17,7 @@
 #' @param dx increment between values at which to evaluate differences between the cdf for \code{yy} and \code{refy}
 #' @param stride number of time steps by which the moving window advances
 #' @param dmin the fraction of data that must be present (i.e., non-NA) in test (and, if applicable, adaptive reference) moving windows to procede with computations.
+#' @param ddiff_method statistic quantifying difference between test and reference distributions; default is "dist" for maximum absolute difference between the ecdf's (bounded [0,1]), "integral" computes the integral of the absolute value of the differences between the ecdf's over the range of observed value (bounded by the distance between the distribution if they are completely non-overlapping)
 #'
 #' @return \code{mwdistdiff} returns a data frame containing the columns:
 #' \item{tleft}{the time corresponding to the beginning (left edge) of the moving window}
@@ -39,7 +40,7 @@
 #' @export
 
 ## create DOY column to index off of, accept tt as numeric (1,Inf), or date
-mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmin=0.5){
+mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmin=0.5, ddiff_method = "dist"){
 
   #a little error handling
   if(!is.data.frame(testy) | !"tt" %in% colnames(testy) | !"yy" %in% colnames(testy)){
@@ -86,7 +87,12 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         else{
           tmprefdist<-ecdf(refy$yy[-pd])
           tmpwdist<-ecdf(refy$yy[pd])
-          ddiff0[ww]<-max(abs(tmprefdist(xx)-tmpwdist(xx)))
+          if(ddiff_method == "dist"){
+            ddiff0[ww]<-max(abs(tmprefdist(xx)-tmpwdist(xx)))
+          }else if(ddiff_method == "integral"){
+            ddiff0[ww]<-dx*sum(abs(tmprefdist(xx)-tmpwdist(xx)))
+          }
+
         }
       }
       #rm(tmprefdist,tmpwdist)
@@ -107,7 +113,11 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         }
         else{
           wdist<-ecdf(testy$yy[pd])
-          ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+          if(ddiff_method == "dist"){
+            ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+          }else if(ddiff_method == "integral"){
+            ddiff[ww]<-dx*sum(abs(refdist(xx)-wdist(xx)))
+          }
           zz[ww]<-(ddiff[ww]-mu.ref)/sd.ref
         }
       }
@@ -135,7 +145,12 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         else{
           tmprefdist<-ecdf(refy$yy[-pd])
           tmpwdist<-ecdf(refy$yy[pd])
-          ddiff0[ww]<-max(abs(tmprefdist(xx)-tmpwdist(xx)))
+          if(ddiff_method == "dist"){
+            ddiff0[ww]<-max(abs(tmprefdist(xx)-tmpwdist(xx)))
+          }else if(ddiff_method == "integral"){
+            ddiff0[ww]<-dx*sum(abs(tmprefdist(xx)-tmpwdist(xx)))
+          }
+
         }
       }
       #rm(tmprefdist,tmpwdist)
@@ -158,7 +173,11 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         }
         else{
           wdist<-ecdf(testy$yy[pd])
-          ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+          if(ddiff_method == "dist"){
+            ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+          }else if(ddiff_method == "integral"){
+            ddiff[ww]<-dx*sum(abs(refdist(xx)-wdist(xx)))
+          }
           zz[ww]<-(ddiff[ww]-mu.ref)/sd.ref
         }
       }
@@ -226,7 +245,11 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         }
         refdist<-ecdf(refy$yy[rpd])
         wdist<-ecdf(refy$yy[tpd])
-        ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+        if(ddiff_method == "dist"){
+          ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+        }else if(ddiff_method == "integral"){
+          ddiff[ww]<-dx*sum(abs(refdist(xx)-wdist(xx)))
+        }
       }
       mu.ref<-mean(ddiff, na.rm=T)
       sd.ref<-sd(ddiff, na.rm=T)
@@ -271,7 +294,11 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
 
         refdist<-ecdf(refy$yy[rpd])
         wdist<-ecdf(testy$yy[tpd])
-        ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+        if(ddiff_method == "dist"){
+          ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+        }else if(ddiff_method == "integral"){
+          ddiff[ww]<-dx*sum(abs(refdist(xx)-wdist(xx)))
+        }
         zz[ww]<-(ddiff[ww]-mu.ref)/sd.ref
 
       }
@@ -326,7 +353,12 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
         }
         refdist<-ecdf(refy$yy[rpd])
         wdist<-ecdf(refy$yy[tpd])
-        ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+        if(ddiff_method == "dist"){
+          ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+        }else if(ddiff_method == "integral"){
+          ddiff[ww]<-dx*sum(abs(refdist(xx)-wdist(xx)))
+        }
+
       }
       mu.ref<-mean(ddiff, na.rm=T)
       sd.ref<-sd(ddiff, na.rm=T)
@@ -371,7 +403,11 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
 
         refdist<-ecdf(refy$yy[rpd])
         wdist<-ecdf(testy$yy[tpd])
-        ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+        if(ddiff_method == "dist"){
+          ddiff[ww]<-max(abs(refdist(xx)-wdist(xx)))
+        }else if(ddiff_method == "integral"){
+          ddiff[ww]<-dx*sum(abs(refdist(xx)-wdist(xx)))
+        }
         zz[ww]<-(ddiff[ww]-mu.ref)/sd.ref
 
       }

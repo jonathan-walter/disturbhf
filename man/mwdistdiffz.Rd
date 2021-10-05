@@ -11,7 +11,8 @@ mwdistdiffz(
   refwidth = NULL,
   dx = 0.01,
   stride = 1,
-  dmin = 0.5
+  dmin = 0.5,
+  ddiff_method = "dist"
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ It must contain the columns \code{tt} and \code{yy}, as in \code{testy}.}
 \item{stride}{number of time steps by which the moving window advances}
 
 \item{dmin}{the fraction of data that must be present (i.e., non-NA) in test (and, if applicable, adaptive reference) moving windows to procede with computations.}
+
+\item{ddiff_method}{statistic quantifying difference between test and reference distributions; default is "dist" for maximum absolute difference between the ecdf's (bounded \link{0,1}), "integral" computes the integral of the absolute value of the differences between the ecdf's over the range of observed value (bounded by the distance between the distribution if they are completely non-overlapping)}
 }
 \value{
 \code{mwdistdiff} returns a data frame containing the columns:
