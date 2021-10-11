@@ -1,7 +1,7 @@
 
 #' Calculate differences in continuous distribution functions between reference and moving window observations
 #'
-#' \code{mwdistdiffz_ks} computes differences between the continuous distribution functions (cdf) for observations within
+#' \code{mwdistdiffz} computes differences between the continuous distribution functions (cdf) for observations within
 #' a moving window and a reference distribution, and the z-scores of differences relative to samples of the reference distribution.
 #' It is used for identifying recovery times from disturbance in time series data.
 #'
@@ -66,10 +66,9 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
   xx<-seq(min(c(refy$yy,testy$yy),na.rm=T)-dx, max(c(refy$yy,testy$yy),na.rm=T)+dx, dx)
 
   #------------------------------------------------------------------------------------------------
-  # Using ALL of refy as the reference period (no seasonal adaptive referece)
+  # Using ALL of refy as the reference period (no seasonal adaptive referecne)
 
   if(is.null(refwidth)){
-    ## TODO: Reconcile this section to make indexing and syntax as close as possible to bottom
     if(is.numeric(testy$tt)){
       #Get mu and sd for excursions during the reference period
       wind0<-seq(from=ceiling(wwidth/2)+1, to=length(refy$tt)-ceiling(wwidth/2), by=stride)
