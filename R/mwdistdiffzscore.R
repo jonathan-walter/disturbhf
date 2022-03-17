@@ -227,9 +227,9 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
           tpd<-refy$tt > ltest | refy$tt <= rtest
         }
 
-        lref<-(refy$doy[abs(refy$tt-wind[ww]) < dt/10]-refwidth*dt/2) %% 365 #left side of reference window
+        lref<-min(refy$doy[abs(refy$tt-wind[ww]) < dt/10]-refwidth*dt/2) %% 365 #left side of reference window
         if(lref==0){lref==365}
-        rref<-(refy$doy[abs(refy$tt-wind[ww]) < dt/10]+refwidth*dt/2) %% 365 #right side of reference window
+        rref<-max(refy$doy[abs(refy$tt-wind[ww]) < dt/10]+refwidth*dt/2) %% 365 #right side of reference window
         if(rref==0){rref==365}
         if(rref > lref){
           rpd<-refy$doy > lref & refy$doy <= rref
@@ -274,10 +274,10 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
           tpd<-testy$tt > ltest | testy$tt <= rtest
         }
 
-        lref<-(testy$doy[abs(testy$tt-wind[ww]) < dt/10]-refwidth*dt/2) %% 365 #left side of reference window
+        lref<-min(testy$doy[abs(testy$tt-wind[ww]) < dt/10]-refwidth*dt/2) %% 365 #left side of reference window
         if(length(lref)==0){next}#enables skipping indices when time series are gappy
         if(lref==0){lref==365}
-        rref<-(testy$doy[abs(testy$tt-wind[ww]) < dt/10]+refwidth*dt/2) %% 365 #right side of reference window
+        rref<-max(testy$doy[abs(testy$tt-wind[ww]) < dt/10]+refwidth*dt/2) %% 365 #right side of reference window
         if(rref==0){rref==365}
         if(rref > lref){
           rpd<-refy$doy > lref & refy$doy <= rref
@@ -334,10 +334,10 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
           tpd<-refy$tt > ltest | refy$tt <= rtest
         }
 
-        lref<-(refy$doy[abs(refy$tt-wind[ww]) < dtt/10]-refwidth*dt/2) %% 365 #left side of reference window
+        lref<-min(refy$doy[abs(refy$tt-wind[ww]) < dtt/10]-refwidth*dt/2) %% 365 #left side of reference window
         if(length(lref)==0){next} #enables skipping indices when time series are gappy
         if(lref==0){lref==365}
-        rref<-(refy$doy[abs(refy$tt-wind[ww]) < dtt/10]+refwidth*dt/2) %% 365 #right side of reference window
+        rref<-max(refy$doy[abs(refy$tt-wind[ww]) < dtt/10]+refwidth*dt/2) %% 365 #right side of reference window
         if(rref==0){rref==365}
         if(rref > lref){
           rpd<-refy$doy > lref & refy$doy <= rref
@@ -383,10 +383,10 @@ mwdistdiffz<-function(testy, refy, wwidth, refwidth=NULL, dx=0.01, stride=1, dmi
           tpd<-testy$tt > ltest | testy$tt <= rtest
         }
 
-        lref<-(testy$doy[abs(testy$tt-wind[ww]) < dtt/10]-refwidth*dt/2) %% 365 #left side of reference window
+        lref<-min(testy$doy[abs(testy$tt-wind[ww]) < dtt/10]-refwidth*dt/2) %% 365 #left side of reference window
         if(length(lref)==0){next}#enables skipping indices when time series are gappy
         if(lref==0){lref==365}
-        rref<-(testy$doy[abs(testy$tt-wind[ww]) < dtt/10]+refwidth*dt/2) %% 365 #right side of reference window
+        rref<-max(testy$doy[abs(testy$tt-wind[ww]) < dtt/10]+refwidth*dt/2) %% 365 #right side of reference window
         if(rref==0){rref==365}
         if(rref > lref){
           rpd<-refy$doy > lref & refy$doy <= rref
